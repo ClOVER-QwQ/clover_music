@@ -2,6 +2,7 @@ package com.clover.clover_music;
 
 import android.os.Bundle;
 
+import android.widget.ImageView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -20,5 +21,13 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        initView();
+    }
+
+    private void initView() {
+        ImageView nextIv = findViewById(R.id.clover_music_bottom_iv_next);
+        ImageView playIv = findViewById(R.id.clover_music_bottom_iv_play);
+        ImageView lastIv = findViewById(R.id.clover_music_bottom_iv_last);
+
     }
 }
