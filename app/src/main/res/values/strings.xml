@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">clover_music</string>
-    <string name="music_name">告白气球</string>
-    <string name="music_author">周杰伦</string>
+    <string name="song"> </string>
+    <string name="singer"> </string>
 </resources>
