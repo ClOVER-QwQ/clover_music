@@ -1,12 +1,18 @@
 package com.clover.clover_music;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
+import android.database.Cursor;
 import android.icu.text.SimpleDateFormat;
 import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -19,9 +25,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
 import java.io.File;
+import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -139,10 +147,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         songTv.setText(musicBean.getSong());
         singerTv.setText(musicBean.getSinger());
         String albumArt = musicBean.getAlbumArt();
-        if (albumArt != null && new File(albumArt).exists()) {
-            albumIv.setImageBitmap(BitmapFactory.decodeFile(albumArt));
+
+        if (albumArt != null) {
+            // 使用 Glide 加载专辑封面
+            Glide.with(MainActivity.this)
+                    .load(albumArt)
+                    .placeholder(R.mipmap.ic_launcher) // 设置占位图
+                    .error(R.mipmap.ic_launcher) // 设置错误图
+                    .into(albumIv);
         } else {
-            albumIv.setImageResource(R.mipmap.ic_launcher); // 默认专辑封面
+            // 默认专辑封面
+            Glide.with(MainActivity.this)
+                    .load(R.mipmap.ic_launcher)
+                    .into(albumIv);
         }
     }
 
@@ -213,8 +230,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 long duration = getDuration(path);
                 String albumArt = getAlbumArt(path);
 
-                SimpleDateFormat sdf = new SimpleDateFormat("mm:ss", Locale.getDefault());
-                String time = sdf.format(new Date(duration));
+                SimpleDateFormat sdf = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    sdf = new SimpleDateFormat("mm:ss", Locale.getDefault());
+                }
+                String time = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    time = sdf.format(new Date(duration));
+                }
 
                 LocalMusicBean bean = new LocalMusicBean(id, song, singer, album, time, path, albumArt);
                 mDatas.add(bean);
@@ -251,6 +274,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private String getAlbumArt(String filePath) {
-        return null;
+        ContentResolver contentResolver = getContentResolver();
+        Uri uri = Uri.fromFile(new File(filePath));
+        String albumArtPath = null;
+
+        // 查询音乐文件获取专辑ID
+        Cursor cursor = contentResolver.query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Audio.Media.ALBUM_ID},
+                MediaStore.Audio.Media.DATA + "=?",
+                new String[]{filePath},
+                null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            @SuppressLint("Range") long albumId = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+            cursor.close();
+
+            // 根据专辑ID获取专辑封面
+            Uri albumArtUri = ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId);
+            albumArtPath = albumArtUri.toString();
+        }
+
+        return albumArtPath;
     }
 }

@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp"
@@ -11,9 +12,11 @@
         app:cardCornerRadius="10dp"
         app:cardElevation="1dp"
         app:cardBackgroundColor="@color/white">
+
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
         <TextView
                 android:id="@+id/item_local_music_num"
                 android:layout_width="wrap_content"
@@ -21,7 +24,10 @@
                 android:text="1"
                 android:layout_centerVertical="true"
                 android:textSize="24sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                tools:ignore="HardcodedText"
+                />
+
         <TextView
                 android:id="@+id/item_local_music_song"
                 android:layout_width="wrap_content"
@@ -31,7 +37,7 @@
                 android:textStyle="bold"
                 android:layout_toEndOf="@id/item_local_music_num"
                 android:singleLine="true"
-                android:layout_marginStart="20dp"/>
+                android:layout_marginStart="20dp" />
 
         <TextView
                 android:id="@+id/item_local_music_singer"
@@ -42,7 +48,7 @@
                 android:layout_alignStart="@id/item_local_music_song"
                 android:layout_marginTop="10dp"
                 android:textSize="14sp"
-                android:textColor="#888"/>
+                android:textColor="#888" />
 
         <TextView
                 android:id="@+id/item_local_music_line"
@@ -52,7 +58,7 @@
                 android:layout_toEndOf="@id/item_local_music_singer"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_alignTop="@id/item_local_music_singer"/>
+                android:layout_alignTop="@id/item_local_music_singer" />
 
         <TextView
                 android:id="@+id/item_local_music_album"
@@ -64,7 +70,8 @@
                 android:textSize="14sp"
                 android:textColor="#888"
                 android:ellipsize="end"
-                android:singleLine="true"/>
+                android:singleLine="true" />
+
         <TextView
                 android:id="@+id/item_local_music_durtion"
                 android:layout_width="wrap_content"
@@ -73,6 +80,7 @@
                 android:layout_alignParentEnd="true"
                 android:text=""
                 android:textSize="14sp"
-                android:textColor="#888"/>
+                android:textColor="#888" />
+
     </RelativeLayout>
 </android.support.v7.widget.CardView>
